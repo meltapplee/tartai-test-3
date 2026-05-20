@@ -14,7 +14,7 @@ class Order(
     val id: String = UUID.randomUUID().toString(),
 
     @Enumerated(EnumType.STRING)
-    val status: OrderStatus,
+    var status: OrderStatus,
 
     val totalAmount: Int,
 

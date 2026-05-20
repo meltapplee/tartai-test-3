@@ -10,12 +10,14 @@ import trart.kr.tartaitest3.order.controller.dto.response.OrderDetailResponse
 import trart.kr.tartaitest3.order.controller.dto.response.OrderItemResponse
 import trart.kr.tartaitest3.order.controller.dto.response.OrderSummaryResponse
 import trart.kr.tartaitest3.order.domain.Order
+import trart.kr.tartaitest3.order.domain.OrderStatus
 import trart.kr.tartaitest3.order.repository.OrderRepository
 
 @Service
 @Transactional(readOnly = true)
 class OrderService(private val orderRepository: OrderRepository) {
 
+//    @Cacheable(cacheNames = ["orders"], key = "#page + ':' + #size")
     fun getOrders(page: Int, size: Int): PageResponse<OrderSummaryResponse> {
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "orderedAt"))
         val orders = orderRepository.findAll(pageable)
@@ -28,6 +30,7 @@ class OrderService(private val orderRepository: OrderRepository) {
         )
     }
 
+//    @Cacheable(cacheNames = ["order"], key = "#id")
     fun getOrder(id: String): OrderDetailResponse {
         val order = orderRepository.findByIdOrNull(id)
             ?: throw NoSuchElementException("Order not found: $id")
@@ -43,4 +46,16 @@ class OrderService(private val orderRepository: OrderRepository) {
         totalAmount = totalAmount,
         orderedAt = orderedAt,
     )
+
+    @Transactional
+//    @CacheEvict(cacheNames = ["order", "orders"], allEntries = true)
+    fun updateStatus(id: String, status: OrderStatus): OrderDetailResponse {
+        val order = orderRepository.findByIdOrNull(id)
+            ?: throw NoSuchElementException("Order not found: $id")
+        check(order.status.canTransitionTo(status)) {
+            " ${order.status.displayName} → ${status.displayName} 변경은 허용되지 않습니다"
+        }
+        order.status = status
+        return order.toDetailResponse()
+    }
 }
