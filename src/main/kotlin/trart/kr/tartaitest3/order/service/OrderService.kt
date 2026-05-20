@@ -20,7 +20,6 @@ class OrderService(
     private val orderRepository: OrderRepository,
     private val notificationService: NotificationService,
 ) {
-    //    @Cacheable(cacheNames = ["orders"], key = "#page + ':' + #size")
     fun getOrders(
         page: Int,
         size: Int,
@@ -36,7 +35,6 @@ class OrderService(
         )
     }
 
-//    @Cacheable(cacheNames = ["order"], key = "#id")
     fun getOrder(id: String): OrderDetailResponse {
         val order =
             orderRepository.findByIdOrNull(id)
@@ -44,18 +42,6 @@ class OrderService(
         return order.toDetailResponse()
     }
 
-    private fun Order.toSummaryResponse() = OrderSummaryResponse(id, status.displayName, totalAmount, orderedAt)
-
-    private fun Order.toDetailResponse() =
-        OrderDetailResponse(
-            id = id,
-            status = status.displayName,
-            items = items.map { OrderItemResponse(it.itemName, it.quantity, it.unitPrice, it.totalPrice) },
-            totalAmount = totalAmount,
-            orderedAt = orderedAt,
-        )
-
-    //    @CacheEvict(cacheNames = ["order", "orders"], allEntries = true)
     @Transactional
     fun updateStatus(
         id: String,
@@ -69,4 +55,15 @@ class OrderService(
         notificationService.notify(id, status)
         return order.toDetailResponse()
     }
+
+    private fun Order.toSummaryResponse() = OrderSummaryResponse(id, status.displayName, totalAmount, orderedAt)
+
+    private fun Order.toDetailResponse() =
+        OrderDetailResponse(
+            id = id,
+            status = status.displayName,
+            items = items.map { OrderItemResponse(it.itemName, it.quantity, it.unitPrice, it.totalPrice) },
+            totalAmount = totalAmount,
+            orderedAt = orderedAt,
+        )
 }

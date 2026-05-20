@@ -1,6 +1,11 @@
 package trart.kr.tartaitest3.post.domain
 
-import jakarta.persistence.*
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
+import jakarta.persistence.Id
+import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
@@ -8,11 +13,8 @@ import java.time.LocalDateTime
 class Post(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     val title: String,
-
     @Column(length = 10000)
     val content: String,
-
     val postedAt: LocalDateTime = LocalDateTime.now(),
 )

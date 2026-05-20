@@ -9,5 +9,4 @@ data class PostDetailResponse(
     val content: String,
     @JsonFormat(pattern = "yyyy.MM.dd HH:mm:ss")
     val postedAt: LocalDateTime,
-) {
-}
+)
