@@ -28,7 +28,7 @@ class PostService(private val postRepository: PostRepository) {
     }
 
     fun getPosts(page: Int, size: Int): PageResponse<PostSummaryResponse> {
-        val pageable = PageRequest.of(page - 1, size, Sort.by(Sort.Direction.DESC, "id"))
+        val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"))
         val posts = postRepository.findAll(pageable)
         return PageResponse(
             content = posts.content.map { it.toSummaryResponse() },

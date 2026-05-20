@@ -26,7 +26,7 @@ class PostController(
 
     @GetMapping
     fun getPosts(
-        @RequestParam(defaultValue = "1") page: Int,
+        @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
     ): PageResponse<PostSummaryResponse> =
         postService.getPosts(page, size)
