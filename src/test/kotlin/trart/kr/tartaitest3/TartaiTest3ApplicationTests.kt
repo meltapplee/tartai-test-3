@@ -1,0 +1,13 @@
+package trart.kr.tartaitest3
+
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
+
+@SpringBootTest
+class TartaiTest3ApplicationTests {
+
+    @Test
+    fun contextLoads() {
+    }
+
+}
