@@ -11,7 +11,7 @@ class NotificationService {
     private val emitters = ConcurrentHashMap<String, CopyOnWriteArrayList<SseEmitter>>()
 
     fun subscribe(orderId: String): SseEmitter {
-        val emitter = SseEmitter(60_000L)
+        val emitter = SseEmitter(300_000L)
         emitters.getOrPut(orderId) { CopyOnWriteArrayList() }.add(emitter)
         val remove = {
             emitters[orderId]?.remove(emitter)
@@ -39,6 +39,10 @@ class NotificationService {
             } catch (e: Exception) {
                 list.remove(emitter)
             }
+        }
+        if (status == OrderStatus.DELIVERED || status == OrderStatus.CANCELLED) {
+            list.forEach { it.complete() }
+            emitters.remove(orderId)
         }
     }
 }
