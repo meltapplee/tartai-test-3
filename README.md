@@ -20,7 +20,16 @@
 ### 주문/상태 조회
 - 주문 목록 조회 (페이지네이션)
 - 주문 상세 조회
-- 주문 상태 변경
+- 주문 상태 변경 (이전 상태로 되돌리기 불가, 앞 단계로는 건너뛰기 가능)
+
+| 현재 상태     | 변경 가능한 상태                                      |
+|-----------|------------------------------------------------|
+| PENDING   | PAID, PREPARING, SHIPPED, DELIVERED, CANCELLED |
+| PAID      | PREPARING, SHIPPED, DELIVERED, CANCELLED       |
+| PREPARING | SHIPPED, DELIVERED, CANCELLED                  |
+| SHIPPED   | DELIVERED, CANCELLED                           |
+| DELIVERED | 변경 불가                                          |
+| CANCELLED | 변경 불가                                          |
 
 ### 공지/게시판
 - 게시글 작성 / 조회 / 삭제
@@ -56,6 +65,9 @@
 ## API 문서
 >https://tartai-test-3.onrender.com/swagger-ui/index.html
 
+## 주의사항
+Render 무료 인스턴스는 비활성 상태 시 자동으로 슬립 상태가 됩니다.                                                                                                      
+슬립 후 첫 요청 시 50초 이상 지연이 발생할 수 있습니다.
 
 ## 환경 변수
 
@@ -64,3 +76,6 @@ DB_URL=
 DB_USERNAME=
 DB_PASSWORD=
 ```
+
+## 테스트
+잘못된 상태 전이를 허용하면 데이터 정합성이 깨지기 때문에, 주문 상태 전이 로직(`OrderStatus.canTransitionTo`)에 단위 테스트를 붙였습니다.
