@@ -51,6 +51,9 @@ class OrderService(
             orderRepository.findByIdOrNull(id)
                 ?: throw NoSuchElementException("Order not found: $id")
 
+        require(order.status.canTransitionTo(status)) {
+            "주문 상태를 ${order.status.displayName}에서 ${status.displayName}으로 변경할 수 없습니다."
+        }
         order.status = status
         notificationService.notify(id, status)
         return order.toDetailResponse()
